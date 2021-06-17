@@ -15,8 +15,9 @@ routes.post('/settings', settingsController.create);
 // Users route
 routes.post('/users', usersController.create);
 
-// Messages route~
+// Messages route
 routes.post('/messages', messagesController.create);
+routes.get('/messages/:id', messagesController.showByUser);
 
 export { routes };
 

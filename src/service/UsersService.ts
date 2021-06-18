@@ -3,7 +3,7 @@ import { Users } from "../entities/Users";
 import { UsersRepository } from "../repositories/UsersRepository";
 
 interface IUsersCreate {
-  name: string;
+  name?: string;
   email: string;
 }
 
@@ -26,6 +26,13 @@ class UsersService {
     await this.usersRepository.save(user);
 
     return user;
+  }
+
+  findByEmail = async (email: string) => {
+    const user = await this.usersRepository.findOne({email});
+
+    return user;
+    
   }
 
 }

@@ -21,6 +21,7 @@ class UsersController {
     }
 
   }
+  
 }
 
 export { UsersController }

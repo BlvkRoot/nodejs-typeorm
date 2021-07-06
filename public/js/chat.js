@@ -41,8 +41,10 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
           document.querySelector('#messages').innerHTML += rendered;
         } else {
           const rendered = Mustache.render(template_admin, {
-            message_admin: message.admin
-          })
+            message_admin: message.text
+          });
+
+          document.querySelector('#messages').innerHTML += rendered;
         }
       });
 

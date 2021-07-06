@@ -65,3 +65,14 @@ const call = (id) => {
   });
 
 }
+
+const sendMessage = (id) => {
+  const text = document.querySelector(`#send_message_${id}`);
+
+  const params ={
+    text: text.value,
+    user_id: id
+  }
+
+  socket.emit('admin_send_message', params);
+}

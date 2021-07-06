@@ -52,4 +52,9 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
 
   });
 
+  socket.on('admin_send_to_client', message => {
+    console.log(message);
+    
+  });
+
 });

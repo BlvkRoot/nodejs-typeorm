@@ -21,5 +21,15 @@ routes.post('/users', usersController.create);
 routes.post('/messages', messagesController.create);
 routes.get('/messages/:id', messagesController.showByUser);
 
+
+// View routes
+routes.get('/pages/client', (request, response) => {
+    return response.render('html/client.html')
+});
+  
+routes.get('/pages/admin', (request, response) => {
+return response.render('html/admin.html')
+});
+
 export { routes };
 

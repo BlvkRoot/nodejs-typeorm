@@ -32,6 +32,7 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
       let template_admin = document.querySelector('#admin-template').innerHTML;
 
       messages.map(message => {
+        // Check messages belong to client or admin attendent
         if(message.admin_id === null){
           const rendered = Mustache.render(template_client, {
             message: message.text,

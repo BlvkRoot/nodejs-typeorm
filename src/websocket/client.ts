@@ -9,11 +9,12 @@ interface IParams {
 }
 
 io.on("connect", socket => {
+  const connectionsService = new ConnectionsService();
+  const usersService = new UsersService();
+  const messagesService = new MessagesService();
+    
   //creating an event => name given for the event can be any
   socket.on('client_first_access', async params => {
-    const connectionsService = new ConnectionsService();
-    const usersService = new UsersService();
-    const messagesService = new MessagesService();
 
     const socket_id = socket.id;
     const { email, text} = params as IParams;
@@ -62,6 +63,33 @@ io.on("connect", socket => {
     const allMessages = await messagesService.listByUser(user_id);
 
     socket.emit('client_list_all_messages', allMessages);
+
+    const allUsers = await connectionsService.findAllWithoutAdmin();
+
+    // Emit an event to all connected admin users
+    io.emit('admin_list_all_users', allUsers);
       
+  });
+
+  socket.on("client_send_to_admin", async params => {
+
+    const { text, socket_admin_id } = params;
+
+    const socket_id = socket.id;
+
+    const { user_id } = await connectionsService.findBySocketId(socket_id);
+
+    const message = await messagesService.create({
+      text,
+      user_id,
+      admin_id: socket_admin_id
+    });
+
+    // Send client message to admin
+    io.to(socket_admin_id).emit('admin_receive_message', {
+      message,
+      socket_id
+    });
+
   });
 });

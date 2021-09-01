@@ -1,5 +1,9 @@
+let socket_admin_id = null;
+let userEmail = null;
+let socket = null;
+
 document.querySelector("#start_chat").addEventListener("click", (event) => {
-  const socket = io();
+  socket = io();
 
   let chat_help = document.querySelector('#chat_help');
   chat_help.style.display = 'none';
@@ -8,6 +12,8 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
   chat_in_support.style.display = 'block';
 
   let email = document.querySelector('#email').value;
+  userEmail = email;
+
   let text = document.querySelector('#txt_help').value;
 
   // Invoking the socket event using emit
@@ -53,9 +59,46 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
 
   });
 
+  // Listen for admin messages sent to client
   socket.on('admin_send_to_client', message => {
-    console.log(message);
+    socket_admin_id = message.socket_id;
+
+    const template_admin = document.querySelector(`#admin-template`).innerHTML;
     
+    const rendered = Mustache.render(template_admin, {
+      message_admin: message.text,
+    });
+
+    document.querySelector(`#messages`).innerHTML += rendered;
+
   });
 
+});
+
+document.querySelector(`#send_message_button`).addEventListener('click', function(){
+  const text = document.querySelector('#message_user').value;
+
+  const params = {
+    text,
+    socket_admin_id
+  }
+  
+  socket.emit('client_send_to_admin', params, (call, err) => {
+    if(err)
+      console.log('Error responding to admin');
+    else
+      console.log('Success responding to admin', call)
+  });
+
+  const template_client = document.querySelector(`#message-user-template`).innerHTML;
+
+  const rendered = Mustache.render(template_client, {
+    message: text,
+    email: userEmail
+  });
+
+  document.querySelector(`#messages`).innerHTML += rendered;
+
+  // Clear text sent
+  text = ''; 
 });
